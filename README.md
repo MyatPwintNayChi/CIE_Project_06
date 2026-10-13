@@ -17,11 +17,26 @@ This project demonstrates a secure, multi-tier microservices architecture connec
 ##  Tech Stack
 
 * **Cloud Networking:** Amazon VPC Peering, Route Tables, Internet Gateways (IGW)
+
+  ![Peering_Connection](peering-connection.png)
+
+  ![route-tables](Route-tables.png)
 * **DNS & Traffic Routing:** Amazon Route 53 (`mpnc.dev` custom public domain)
+
+  ![domain](Domain.png)
+  
 * **Security & SSL/TLS:** AWS Certificate Manager (ACM), Security Groups
+
+   ![customer-profile-sg](customer-profile-sg.png)
+
+   ![account-sg](account-sg.png)
+
+  ![statement-sg](statement-sg.png)
 * **Load Balancing:** AWS Application Load Balancer (ALB) with HTTPS listener (Port 443)
 * **Compute / Services:** nicholasjackson/fake-service (`customer-profile`, `account`, `statement`) deployed across EC2 instances
 * **Access Control:** Jump Host (Bastion) for secure SSH management
+
+   
 ---
 
 ##  Network & Subnet CIDR Design
@@ -39,11 +54,22 @@ This project demonstrates a secure, multi-tier microservices architecture connec
 
 * **Route Tables:**
   * `customer-profile-vpc` private route table routes traffic destined for `172.16.1.100/32` across the VPC peering connection.
+    
+ ![customer-private-rt](customer-private-rt.png)
+ ![customer-public-rt](customer-public-rt.png)
   * `account-vpc` route table allows local traffic (`172.16.0.0/16`), routes customer-profile requests (`10.0.2.189/32`), and communicates with statement service (`20.0.1.100/32`) via peering.
+    
+ ![account-private-rt](account-private-rt.png)
   * `statement-vpc` route table accepts inbound requests from the account service IP (`172.16.1.100/32`) over peering.
+
+  ![statement-private-rt](statement-private-rt.png)
+
+ 
+    
 * **HTTPS / TLS Encryption:** A public SSL/TLS certificate was provisioned via AWS Certificate Manager (ACM) and bound to the ALB listener on port 443, secured via Route 53 DNS validation.
 
-  ![Peering_Connection](peering-connection.png)
+ 
+  
   ![Listener_Rules](customer-profile-alb.png)
  ---
 
